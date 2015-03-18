@@ -14,7 +14,6 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -35,7 +34,7 @@ public class Login extends Activity {
 
         LoginButton = (Button) findViewById(R.id.login);
         EmailText = (EditText) findViewById(R.id.username);
-        PasswordText = (EditText) findViewById(R.id.username);
+        PasswordText = (EditText) findViewById(R.id.password);
 
         aq = new AQuery(this);
 
@@ -74,8 +73,8 @@ public class Login extends Activity {
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("udid", "mint");
-        params.put("email", "shelby.rae.801@gmail.com");
-        params.put("password", "Macu1234");
+        params.put("email", username);
+        params.put("password", password);
 
         aq.ajax(apiUrl, params, JSONObject.class, cb);
 
@@ -94,7 +93,7 @@ public class Login extends Activity {
                 startActivity(intent);
 
                 //Toast.makeText(this, token, Toast.LENGTH_LONG).show();
-
+                break;
             default:
                 Toast.makeText(this, status.getMessage(), Toast.LENGTH_LONG).show();
         }
