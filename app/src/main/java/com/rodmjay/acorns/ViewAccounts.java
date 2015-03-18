@@ -1,9 +1,12 @@
 package com.rodmjay.acorns;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class ViewAccounts extends Activity {
@@ -12,6 +15,11 @@ public class ViewAccounts extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_accounts);
+
+        Intent intent = getIntent();
+        String token = intent.getStringExtra("token");
+        Toast.makeText(this, token, Toast.LENGTH_LONG).show();
+
     }
 
 

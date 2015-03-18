@@ -2,7 +2,6 @@ package com.rodmjay.acorns;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,57 +10,94 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.AjaxStatus;
 
-import static android.view.View.OnClickListener;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Login extends Activity {
 
+    public final static String apiUrl = "https://api.acorns.com/v1/sessions";
+    AQuery aq;
     EditText EmailText;
     EditText PasswordText;
     Button LoginButton;
-
-    public final static String apiUrl = "https://api.acorns.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        LoginButton = (Button)findViewById(R.id.login);
-        EmailText = (EditText)findViewById(R.id.username);
-        PasswordText = (EditText)findViewById(R.id.username);
+        LoginButton = (Button) findViewById(R.id.login);
+        EmailText = (EditText) findViewById(R.id.username);
+        PasswordText = (EditText) findViewById(R.id.username);
+
+        aq = new AQuery(this);
 
         SetupUiEvents();
     }
 
-    void SetupUiEvents(){
+    void SetupUiEvents() {
 
         LoginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                handleLoginClick((Button)v);
+                try {
+                    handleLoginClick((Button) v);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
 
-    void handleLoginClick(Button button){
+    void handleLoginClick(Button button) throws Exception {
 
-      String username = EmailText.getText().toString();
-      String password = PasswordText.getText().toString();
+        String username = EmailText.getText().toString();
+        String password = PasswordText.getText().toString();
 
-        if(username != null && !username.isEmpty()){
+        AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 
-            new CallAPI().execute(apiUrl);
+        cb.url(apiUrl).type(JSONObject.class).weakHandler(this, "jsonCb");
 
+        cb.header("X-Client-App", "mint");
+        cb.header("X-Client-Build", "mint");
+        cb.header("X-Client-Os", "mint");
+        cb.header("X-Client-Platform", "mint");
+        cb.header("User-Agent", "mint");
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("udid", "mint");
+        params.put("email", "shelby.rae.801@gmail.com");
+        params.put("password", "Macu1234");
+
+        aq.ajax(apiUrl, params, JSONObject.class, cb);
+
+    }
+
+    public void jsonCb(String url, JSONObject obj, AjaxStatus status) throws Exception {
+
+        switch (status.getCode()) {
+            case 201:
+                Intent intent = new Intent(this, ViewAccounts.class);
+
+                String token = obj.getString("token");
+
+                intent.putExtra("token", token);
+
+                startActivity(intent);
+
+                //Toast.makeText(this, token, Toast.LENGTH_LONG).show();
+
+            default:
+                Toast.makeText(this, status.getMessage(), Toast.LENGTH_LONG).show();
         }
-
-      Intent intent = new Intent(this, ViewAccounts.class);
-        startActivity(intent);
     }
 
     @Override
@@ -84,39 +120,5 @@ public class Login extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private class CallAPI extends AsyncTask<String, String, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            String urlString = params[0];
-
-            String resultToDisplay = "";
-
-            InputStream in = null;
-
-            try{
-                URL url = new URL(urlString);
-                HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
-                in = new BufferedInputStream(urlConnection.getInputStream());
-            } catch(Exception e){
-                System.out.println(e.getMessage());
-
-                return e.getMessage();
-            }
-
-            return resultToDisplay;
-        }
-
-        protected void onPostExecute(String result){
-
-        }
-    }
-
-    private class LoginResult {
-        public String Token;
-        public String PersistentToken;
     }
 }
