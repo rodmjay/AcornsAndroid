@@ -16,9 +16,9 @@ public class AccountAdapter extends BaseAdapter {
     private Context Context;
     private LayoutInflater Inflater;
     private Activity Activity;
-    private AccountModel[] Model;
+    private TransactionModel[] Model;
 
-    public AccountAdapter(Context context, LayoutInflater inflater, Activity activity, AccountModel[] model){
+    public AccountAdapter(Context context, LayoutInflater inflater, Activity activity, TransactionModel[] model) {
         this.Context = context;
         this.Inflater = inflater;
         this.Activity = activity;
@@ -30,7 +30,7 @@ public class AccountAdapter extends BaseAdapter {
 
         View gridView;
 
-        if(convertView == null){
+        if (convertView == null) {
 
             gridView = new View(this.Context);
 
@@ -38,11 +38,11 @@ public class AccountAdapter extends BaseAdapter {
             gridView = Inflater.inflate(R.layout.account_item, null);
 
             // set value into textview
-            TextView accountTextView = (TextView)gridView.findViewById(R.id.accountNameTextView);
+            TextView accountTextView = (TextView) gridView.findViewById(R.id.accountNameTextView);
             accountTextView.setText(Model[position].AccountName);
 
-        }else{
-            gridView = (View)convertView;
+        } else {
+            gridView = (View) convertView;
         }
 
         return gridView;

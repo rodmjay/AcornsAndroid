@@ -3,8 +3,6 @@ package com.rodmjay.acorns;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -84,7 +82,7 @@ public class Login extends Activity {
 
         switch (status.getCode()) {
             case 201:
-                Intent intent = new Intent(this, ViewAccounts.class);
+                Intent intent = new Intent(this, ViewAccount.class);
 
                 String token = obj.getString("token");
 

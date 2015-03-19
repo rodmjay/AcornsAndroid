@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Acorns</string>
-
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_view_accounts">ViewAccounts</string>
+    <string name="title_activity_view_accounts">View Account</string>
 </resources>

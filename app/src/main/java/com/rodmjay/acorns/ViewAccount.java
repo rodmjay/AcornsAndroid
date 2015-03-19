@@ -3,29 +3,25 @@ package com.rodmjay.acorns;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
-public class ViewAccounts extends Activity {
 
+public class ViewAccount extends Activity {
+
+    private static final String AccountSummaryUrl = "https://api.acorns.com/v1/account_summary";
     private AQuery aq;
     private String Token;
-    private static final String AccountSummaryUrl = "https://api.acorns.com/v1/account_summary";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +30,13 @@ public class ViewAccounts extends Activity {
         aq = new AQuery(this);
         Intent intent = getIntent();
         Token = intent.getStringExtra("token");
-       // Toast.makeText(this, Token, Toast.LENGTH_LONG).show();
+        // Toast.makeText(this, Token, Toast.LENGTH_LONG).show();
 
         SetupGrid();
 
     }
 
-    public void SetupGrid(){
+    public void SetupGrid() {
 
         String url = AccountSummaryUrl + "?token=" + this.Token;
 
@@ -61,17 +57,33 @@ public class ViewAccounts extends Activity {
 
         JSONArray array = obj.getJSONArray("investments");
 
-        AccountModel[] models = new AccountModel[array.length()];
+        TransactionModel[] models = new TransactionModel[array.length()];
 
-        for(int i = 0; i<array.length(); i++){
+        for (int i = 0; i < array.length(); i++) {
             JSONObject subObj = array.getJSONObject(i);
-            AccountModel model = new AccountModel();
+            TransactionModel model = new TransactionModel();
             model.AccountName = subObj.getString("id");
 
             models[i] = model;
         }
 
-        GridView gridview = (GridView)findViewById(R.id.gridView);
-        gridview.setAdapter(new AccountAdapter(this,this.getLayoutInflater(),this, models));
+        GridView gridview = (GridView) findViewById(R.id.gridView);
+        gridview.setAdapter(new AccountAdapter(this, this.getLayoutInflater(), this, models));
+
+        JSONObject accountObject = obj.getJSONObject("user");
+
+        String firstName = accountObject.getString("first_name");
+        String lastName = accountObject.getString("last_name");
+        double amount = accountObject.getDouble("account_balance");
+
+        AccountModel model = new AccountModel(firstName, lastName, amount);
+
+        TextView userNameLabel = (TextView)findViewById(R.id.userNameLabel);
+        userNameLabel.setText(model.FirstName + " " + model.LastName);
+
+        NumberFormat formatter = new DecimalFormat("#0.00");
+
+        TextView accountBalanceLabel = (TextView)findViewById(R.id.totalAmountLabel);
+        accountBalanceLabel.setText(formatter.format(model.AccountBalance));
     }
 }

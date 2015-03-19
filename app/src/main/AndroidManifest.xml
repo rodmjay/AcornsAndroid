@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ViewAccounts"
+            android:name=".ViewAccount"
             android:label="@string/title_activity_view_accounts" >
         </activity>
     </application>
