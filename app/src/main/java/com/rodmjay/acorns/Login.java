@@ -63,7 +63,7 @@ public class Login extends Activity {
 
         AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 
-        cb.url(apiUrl).type(JSONObject.class).weakHandler(this, "jsonCb");
+        cb.url(apiUrl).type(JSONObject.class).weakHandler(this, "LoginCallback");
 
         cb.header("X-Client-App", "mint");
         cb.header("X-Client-Build", "mint");
@@ -80,7 +80,7 @@ public class Login extends Activity {
 
     }
 
-    public void jsonCb(String url, JSONObject obj, AjaxStatus status) throws Exception {
+    public void LoginCallback(String url, JSONObject obj, AjaxStatus status) throws Exception {
 
         switch (status.getCode()) {
             case 201:
@@ -97,27 +97,5 @@ public class Login extends Activity {
             default:
                 Toast.makeText(this, status.getMessage(), Toast.LENGTH_LONG).show();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_login, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
